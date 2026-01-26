@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@afrimine/shared/*": ["packages/shared/*"],
+      "@ui/*": ["packages/ui/*"]
+    },
+    "types": ["node"]
+  }
+}
