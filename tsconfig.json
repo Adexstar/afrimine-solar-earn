@@ -1,10 +1,28 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@afrimine/shared/*": ["packages/shared/*"],
-      "@ui/*": ["packages/ui/*"]
+      "@/*": ["./apps/web/afrimine-solar-earn-main/src/*"]
     },
-    "types": ["node"]
-  }
+    "baseUrl": ".",
+    "types": ["vite/client"]
+  },
+  "include": [
+    "src/**/*",
+    "apps/web/afrimine-solar-earn-main/src/**/*"
+  ]
 }
