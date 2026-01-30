@@ -23,8 +23,8 @@ export function useMinerStatus(): MinerStatus {
   const [isCharging, setIsCharging] = useState(false);
   
   const { hasBonus } = useCluster();
-  const hashrateIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const batteryIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const hashrateIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const batteryIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Update battery status periodically
   useEffect(() => {
