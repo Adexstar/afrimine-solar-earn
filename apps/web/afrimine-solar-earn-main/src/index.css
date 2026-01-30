@@ -1,63 +1,83 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* AfriMine Solar Theme - Tailwind v4 CSS-first configuration */
+@theme {
+  /* Colors */
+  --color-background: hsl(210 30% 8%);
+  --color-foreground: hsl(45 20% 96%);
+  
+  --color-card: hsl(210 25% 12%);
+  --color-card-foreground: hsl(45 20% 96%);
+  
+  --color-popover: hsl(210 28% 10%);
+  --color-popover-foreground: hsl(45 20% 96%);
+  
+  /* Deep emerald green - African growth & solar energy */
+  --color-primary: hsl(155 75% 38%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  
+  /* Slightly lighter surface */
+  --color-secondary: hsl(210 22% 16%);
+  --color-secondary-foreground: hsl(45 20% 96%);
+  
+  --color-muted: hsl(210 20% 18%);
+  --color-muted-foreground: hsl(45 10% 65%);
+  
+  /* Warm gold accent - wealth & sun */
+  --color-accent: hsl(45 95% 58%);
+  --color-accent-foreground: hsl(210 30% 8%);
+  
+  --color-destructive: hsl(0 72% 51%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+  
+  /* Active/Success - bright solar green */
+  --color-success: hsl(142 76% 50%);
+  --color-success-foreground: hsl(0 0% 100%);
+  
+  --color-border: hsl(210 20% 20%);
+  --color-input: hsl(210 22% 16%);
+  --color-ring: hsl(155 75% 45%);
+  
+  /* Border radius */
+  --radius-lg: 0.75rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.25rem;
+  
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
 
-@layer base {
-  :root {
-    /* AfriMine Solar Theme - African Green, Gold, and Deep Charcoal */
-    --background: 210 30% 8%;
-    --foreground: 45 20% 96%;
-
-    --card: 210 25% 12%;
-    --card-foreground: 45 20% 96%;
-
-    --popover: 210 28% 10%;
-    --popover-foreground: 45 20% 96%;
-
-    /* Deep emerald green - African growth & solar energy */
-    --primary: 155 75% 38%;
-    --primary-foreground: 0 0% 100%;
-
-    /* Slightly lighter surface */
-    --secondary: 210 22% 16%;
-    --secondary-foreground: 45 20% 96%;
-
-    --muted: 210 20% 18%;
-    --muted-foreground: 45 10% 65%;
-
-    /* Warm gold accent - wealth & sun */
-    --accent: 45 95% 58%;
-    --accent-foreground: 210 30% 8%;
-
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-
-    /* Active/Success - bright solar green */
-    --success: 142 76% 50%;
-    --success-foreground: 0 0% 100%;
-
-    --border: 210 20% 20%;
-    --input: 210 22% 16%;
-    --ring: 155 75% 45%;
-
-    --radius: 0.75rem;
-
-    /* Solar gradients */
-    --gradient-solar: linear-gradient(135deg, hsl(155, 75%, 38%), hsl(142, 76%, 50%));
-    --gradient-gold: linear-gradient(135deg, hsl(45, 95%, 58%), hsl(35, 90%, 65%));
-    --gradient-hero: linear-gradient(180deg, hsl(210, 30%, 8%) 0%, hsl(155, 75%, 12%) 100%);
-
-    /* Shadows with green glow */
-    --shadow-glow: 0 0 40px hsla(155, 75%, 45%, 0.3);
-    --shadow-card: 0 10px 30px -10px hsla(0, 0%, 0%, 0.5);
-
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+@keyframes accordion-down {
+  from {
+    height: 0;
   }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+/* Solar gradients */
+:root {
+  --gradient-solar: linear-gradient(135deg, hsl(155, 75%, 38%), hsl(142, 76%, 50%));
+  --gradient-gold: linear-gradient(135deg, hsl(45, 95%, 58%), hsl(35, 90%, 65%));
+  --gradient-hero: linear-gradient(180deg, hsl(210, 30%, 8%) 0%, hsl(155, 75%, 12%) 100%);
+  
+  /* Shadows with green glow */
+  --shadow-glow: 0 0 40px hsla(155, 75%, 45%, 0.3);
+  --shadow-card: 0 10px 30px -10px hsla(0, 0%, 0%, 0.5);
+  
+  /* Animations */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @layer base {
