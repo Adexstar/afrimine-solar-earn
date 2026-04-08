@@ -1,49 +1,24 @@
 
 
-# Fix: Rename Vite Config for Lovable Compatibility
+## Fix: Add `"type": "module"` to root package.json
 
-## Problem
-The project currently uses `vite.config.mts`, which Lovable's build system does not recognize. It requires a `vite.config.ts` file.
+### Problem
+The build fails because ESM-only packages (`@vitejs/plugin-react-swc`, `lovable-tagger`) cannot be loaded via `require()`. The root `package.json` is missing `"type": "module"`, so Node.js treats `.ts` config files as CommonJS.
 
-## Solution
+### Solution
+Add `"type": "module"` to the root `package.json` (line 2, after `"name"`). This is a one-line change.
 
-### 1. Delete `vite.config.mts`
-Remove the current config file that uses the `.mts` extension.
-
-### 2. Create `vite.config.ts`
-Create an identical file but with the `.ts` extension. The content stays the same -- port 8080, path alias pointing to the nested app source, React plugin, and lovable-tagger.
-
-### 3. Add `"type": "module"` to `package.json`
-This ensures ES module syntax (`import`/`export`) works in `.ts` config files without needing the `.mts` workaround.
-
----
-
-### Technical Details
-
-**`vite.config.ts`** (recreated):
-```typescript
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import path from "path";
-import { fileURLToPath } from "url";
-import { componentTagger } from "lovable-tagger";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-export default defineConfig(({ mode }) => ({
-  server: { host: "::", port: 8080 },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./apps/web/afrimine-solar-earn-main/src"),
-    },
-  },
-}));
+### Technical Detail
+```json
+{
+  "name": "afrimine-monorepo",
+  "type": "module",
+  ...
+}
 ```
 
-**`package.json`** change:
-- Add `"type": "module"` at the top level
+No other files need to change. The `vite.config.ts` is already written in ESM syntax and will work once this flag is set.
 
-This is the only change needed to unblock the build.
+### Why the UI keeps breaking
+Your project has a hybrid monorepo structure (Expo + Vite) nested under `apps/web/`. Every time the Lovable template updater runs, it may regenerate config files without this flag, causing the same ESM error. After this fix, I recommend not running the template updater again unless necessary.
 
