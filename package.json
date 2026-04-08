@@ -1,5 +1,6 @@
 {
   "name": "afrimine-monorepo",
+  "type": "module",
   "private": true,
   "packageManager": "pnpm@9",
   "workspaces": [
