@@ -176,9 +176,12 @@ export type Database = {
         Row: {
           balance_usd: number | null
           created_at: string
+          daily_streak: number | null
           device_id: string | null
           id: string
           language: string | null
+          last_heartbeat: string | null
+          mining_active: boolean | null
           referral_code: string
           referred_by: string | null
           total_earned_usd: number | null
@@ -190,9 +193,12 @@ export type Database = {
         Insert: {
           balance_usd?: number | null
           created_at?: string
+          daily_streak?: number | null
           device_id?: string | null
           id?: string
           language?: string | null
+          last_heartbeat?: string | null
+          mining_active?: boolean | null
           referral_code: string
           referred_by?: string | null
           total_earned_usd?: number | null
@@ -204,9 +210,12 @@ export type Database = {
         Update: {
           balance_usd?: number | null
           created_at?: string
+          daily_streak?: number | null
           device_id?: string | null
           id?: string
           language?: string | null
+          last_heartbeat?: string | null
+          mining_active?: boolean | null
           referral_code?: string
           referred_by?: string | null
           total_earned_usd?: number | null
@@ -339,9 +348,44 @@ export type Database = {
         }
         Relationships: []
       }
+      withdrawals: {
+        Row: {
+          amount: number
+          created_at: string | null
+          destination: string | null
+          id: string
+          method: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          destination?: string | null
+          id?: string
+          method: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          destination?: string | null
+          id?: string
+          method?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      active_miners_count: {
+        Row: {
+          total_active: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       generate_cluster_code: { Args: never; Returns: string }
