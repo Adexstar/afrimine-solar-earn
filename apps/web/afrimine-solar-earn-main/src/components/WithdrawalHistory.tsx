@@ -28,13 +28,13 @@ const WithdrawalHistory = () => {
     const fetch = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("withdrawals")
         .select("*")
         .eq("user_id", session.user.id)
         .order("created_at", { ascending: false })
         .limit(20);
-      setWithdrawals((data as Withdrawal[]) || []);
+      setWithdrawals((data as unknown as Withdrawal[]) || []);
       setLoading(false);
     };
     fetch();
