@@ -19,6 +19,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
+import WithdrawalHistory from "@/components/WithdrawalHistory";
 
 const QUICK_AMOUNTS = [5, 10, 25, 50];
 
@@ -326,6 +327,9 @@ const Wallet = () => {
             )}
           </div>
         </Card>
+
+        {/* Withdrawal History */}
+        <WithdrawalHistory />
 
         {/* Info */}
         <Card className="p-4 bg-secondary border-border">
