@@ -328,6 +328,9 @@ const Wallet = () => {
           </div>
         </Card>
 
+        {/* Withdrawal History */}
+        <WithdrawalHistory />
+
         {/* Info */}
         <Card className="p-4 bg-secondary border-border">
           <h3 className="font-semibold text-foreground mb-2 text-sm">Payment Info</h3>
