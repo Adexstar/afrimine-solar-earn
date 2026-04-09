@@ -19,6 +19,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
+import WithdrawalHistory from "@/components/WithdrawalHistory";
 
 const QUICK_AMOUNTS = [5, 10, 25, 50];
 
