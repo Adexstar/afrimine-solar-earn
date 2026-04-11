@@ -6,29 +6,22 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { ReferralCard } from "@/components/ReferralCard";
+import { EarningsBreakdown } from "@/components/EarningsBreakdown";
 import { LiveEarningsCounter } from "@/components/LiveEarningsCounter";
 import { ActiveMinersWidget } from "@/components/ActiveMinersWidget";
 import { DailyStreakWidget } from "@/components/DailyStreakWidget";
+import { DevicePool } from "@/components/DevicePool";
 import { useCluster } from "@/hooks/useCluster";
 import { useMinerStatus } from "@/hooks/useMinerStatus";
 import { useProfile } from "@/hooks/useProfile";
 import { useHeartbeat } from "@/hooks/useHeartbeat";
+import { useBoost } from "@/hooks/useBoost";
+import { useTasks } from "@/hooks/useTasks";
 import { getOrCreateDeviceId } from "@/lib/deviceId";
 import {
-  Sun,
-  Zap,
-  DollarSign,
-  Wallet,
-  Settings,
-  Play,
-  Square,
-  Battery,
-  Activity,
-  CheckCircle2,
-  Users,
-  TrendingUp,
-  Clock,
-  BarChart3,
+  Sun, Zap, DollarSign, Wallet, Settings, Play, Square,
+  Battery, Activity, CheckCircle2, Users, TrendingUp,
+  Clock, BarChart3, Rocket, Gift, Thermometer,
 } from "lucide-react";
 
 const POOL_URL = "stratum+tcp://pool.example.com:3333";
@@ -38,22 +31,17 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { hasBonus } = useCluster();
   const { profile } = useProfile();
+  const { activeBoost, multiplier: boostMultiplier } = useBoost();
+  const { totalBonus } = useTasks();
   const {
-    isMining,
-    currentHashrate,
-    statusMessage,
-    acceptedShares,
-    batteryLevel,
-    isCharging,
-    start,
-    stop,
+    isMining, currentHashrate, statusMessage, acceptedShares,
+    batteryLevel, isCharging, temperature, start, stop,
   } = useMinerStatus();
 
   const [sessionEarnings, setSessionEarnings] = useState(0);
   const [sessionDuration, setSessionDuration] = useState(0);
   const [totalHashes, setTotalHashes] = useState(0);
 
-  // Heartbeat sync
   useHeartbeat(isMining);
 
   useEffect(() => {
@@ -62,19 +50,15 @@ const Dashboard = () => {
     });
   }, [navigate]);
 
-  // Session timer
   useEffect(() => {
     if (!isMining) return;
     const timer = setInterval(() => setSessionDuration((p) => p + 1), 1000);
     return () => clearInterval(timer);
   }, [isMining]);
 
-  // Track total hashes
   useEffect(() => {
     if (isMining && currentHashrate > 0) {
-      const interval = setInterval(() => {
-        setTotalHashes((p) => p + currentHashrate);
-      }, 1000);
+      const interval = setInterval(() => setTotalHashes((p) => p + currentHashrate), 1000);
       return () => clearInterval(interval);
     }
   }, [isMining, currentHashrate]);
@@ -117,7 +101,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
-      {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -130,10 +113,19 @@ const Dashboard = () => {
                 <div className={`w-2 h-2 rounded-full ${isMining ? "bg-success animate-pulse" : "bg-border"}`} />
                 <span className="text-xs text-muted-foreground">{statusMessage}</span>
                 {hasBonus && <span className="text-xs text-accent font-semibold">+25%</span>}
+                {boostMultiplier > 1 && (
+                  <span className="text-xs text-accent font-bold">{boostMultiplier}x</span>
+                )}
               </div>
             </div>
           </div>
           <div className="flex gap-1.5">
+            <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => navigate("/boost")}>
+              <Rocket className="w-4 h-4" />
+            </Button>
+            <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => navigate("/tasks")}>
+              <Gift className="w-4 h-4" />
+            </Button>
             <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => navigate("/cluster")}>
               <Users className="w-4 h-4" />
             </Button>
@@ -160,15 +152,9 @@ const Dashboard = () => {
             }`}
           >
             {isMining ? (
-              <>
-                <Square className="w-7 h-7 mr-3" />
-                STOP MINING
-              </>
+              <><Square className="w-7 h-7 mr-3" /> STOP MINING</>
             ) : (
-              <>
-                <Play className="w-7 h-7 mr-3" />
-                START SOLAR MINING
-              </>
+              <><Play className="w-7 h-7 mr-3" /> START SOLAR MINING</>
             )}
           </Button>
 
@@ -184,6 +170,14 @@ const Dashboard = () => {
                 <span className="font-medium text-accent">Solar</span>
               </div>
             )}
+            {isMining && temperature > 0 && (
+              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${
+                temperature > 45 ? "bg-destructive/20 border-destructive" : "bg-card border-border"
+              }`}>
+                <Thermometer className={`w-4 h-4 ${temperature > 45 ? "text-destructive" : "text-muted-foreground"}`} />
+                <span className="font-medium">{temperature}°C</span>
+              </div>
+            )}
             {isMining && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/20 rounded-full border border-primary text-sm">
                 <Clock className="w-4 h-4 text-primary" />
@@ -196,16 +190,33 @@ const Dashboard = () => {
                 <span className="font-medium text-primary">Cluster</span>
               </div>
             )}
+            {boostMultiplier > 1 && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-accent/20 rounded-full border border-accent text-sm">
+                <Rocket className="w-4 h-4 text-accent" />
+                <span className="font-medium text-accent">{boostMultiplier}x Boost</span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Live Earnings */}
+        {/* Earnings Breakdown */}
+        <EarningsBreakdown
+          miningEarnings={sessionEarnings}
+          bonusEarnings={totalBonus}
+          boostMultiplier={boostMultiplier}
+          isMining={isMining}
+        />
+
+        {/* Live Earnings (base counter) */}
         <LiveEarningsCounter
           isMining={isMining}
           hashrate={currentHashrate}
           sessionEarnings={sessionEarnings}
           onEarningsUpdate={handleEarningsUpdate}
         />
+
+        {/* Pooled Devices */}
+        <DevicePool />
 
         {/* Social Proof Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -220,56 +231,38 @@ const Dashboard = () => {
               <Activity className="w-5 h-5 text-primary" />
               <span className="text-xs text-muted-foreground uppercase tracking-wider">Hashrate</span>
             </div>
-            <div className="text-2xl font-bold text-foreground font-mono">
-              {currentHashrate.toLocaleString()}
-            </div>
+            <div className="text-2xl font-bold text-foreground font-mono">{currentHashrate.toLocaleString()}</div>
             <div className="text-xs text-muted-foreground">H/s</div>
-            {isMining && (
-              <Progress value={Math.min((currentHashrate / 2500) * 100, 100)} className="mt-2 h-1.5" />
-            )}
+            {isMining && <Progress value={Math.min((currentHashrate / 2500) * 100, 100)} className="mt-2 h-1.5" />}
           </Card>
-
           <Card className="p-4 bg-card border-border">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle2 className="w-5 h-5 text-success" />
               <span className="text-xs text-muted-foreground uppercase tracking-wider">Shares</span>
             </div>
-            <div className="text-2xl font-bold text-foreground font-mono">
-              {acceptedShares}
-            </div>
+            <div className="text-2xl font-bold text-foreground font-mono">{acceptedShares}</div>
             <div className="text-xs text-muted-foreground">accepted</div>
           </Card>
-
           <Card className="p-4 bg-card border-border">
             <div className="flex items-center gap-2 mb-2">
               <BarChart3 className="w-5 h-5 text-accent" />
               <span className="text-xs text-muted-foreground uppercase tracking-wider">Total Hashes</span>
             </div>
             <div className="text-2xl font-bold text-foreground font-mono">
-              {totalHashes > 1000000
-                ? `${(totalHashes / 1000000).toFixed(1)}M`
-                : totalHashes > 1000
-                ? `${(totalHashes / 1000).toFixed(1)}K`
-                : totalHashes}
+              {totalHashes > 1000000 ? `${(totalHashes / 1000000).toFixed(1)}M` : totalHashes > 1000 ? `${(totalHashes / 1000).toFixed(1)}K` : totalHashes}
             </div>
             <div className="text-xs text-muted-foreground">this session</div>
           </Card>
-
           <Card className="p-4 bg-card border-border">
             <div className="flex items-center gap-2 mb-2">
               <DollarSign className="w-5 h-5 text-accent" />
               <span className="text-xs text-muted-foreground uppercase tracking-wider">Balance</span>
             </div>
-            <div className="text-2xl font-bold text-foreground font-mono">
-              ${(profile?.balance_usd || 0).toFixed(4)}
-            </div>
-            <div className="text-xs text-success">
-              +${(profile?.total_earned_usd || 0).toFixed(2)} total
-            </div>
+            <div className="text-2xl font-bold text-foreground font-mono">${(profile?.balance_usd || 0).toFixed(4)}</div>
+            <div className="text-xs text-success">+${(profile?.total_earned_usd || 0).toFixed(2)} total</div>
           </Card>
         </div>
 
-        {/* Referral Card */}
         <ReferralCard />
 
         {/* Mining Log */}
@@ -279,27 +272,22 @@ const Dashboard = () => {
             Mining Activity
           </h2>
           <div className="space-y-2">
-            {miningLogs.length > 0 ? (
-              miningLogs.map((log, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-secondary rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className="w-4 h-4 text-success" />
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{log.share}</p>
-                      <p className="text-xs text-muted-foreground">{log.time}</p>
-                    </div>
+            {miningLogs.length > 0 ? miningLogs.map((log, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-success" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{log.share}</p>
+                    <p className="text-xs text-muted-foreground">{log.time}</p>
                   </div>
                 </div>
-              ))
-            ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                Start mining to see activity logs
-              </p>
+              </div>
+            )) : (
+              <p className="text-sm text-muted-foreground text-center py-4">Start mining to see activity logs</p>
             )}
           </div>
         </Card>
 
-        {/* Info Banner */}
         {!isMining && (
           <Card className="p-5 bg-primary/10 border-primary">
             <div className="flex items-start gap-3">
@@ -307,7 +295,7 @@ const Dashboard = () => {
               <div>
                 <h3 className="font-semibold text-foreground mb-1">Smart Battery Protection</h3>
                 <p className="text-sm text-muted-foreground">
-                  Mining pauses below 20% battery. Charge with solar for best results!
+                  Mining pauses below 20% battery or above 50°C. Charge with solar for best results!
                 </p>
               </div>
             </div>

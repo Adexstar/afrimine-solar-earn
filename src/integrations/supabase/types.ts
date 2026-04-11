@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      boosts: {
+        Row: {
+          amount_paid: number
+          expires_at: string
+          id: string
+          multiplier: number
+          purchased_at: string | null
+          tier: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid?: number
+          expires_at: string
+          id?: string
+          multiplier: number
+          purchased_at?: string | null
+          tier: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          expires_at?: string
+          id?: string
+          multiplier?: number
+          purchased_at?: string | null
+          tier?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       cluster_members: {
         Row: {
           cluster_id: string
@@ -175,6 +205,8 @@ export type Database = {
       profiles: {
         Row: {
           balance_usd: number | null
+          charge_only_mining: boolean | null
+          cpu_throttle: number | null
           created_at: string
           daily_streak: number | null
           device_id: string | null
@@ -192,6 +224,8 @@ export type Database = {
         }
         Insert: {
           balance_usd?: number | null
+          charge_only_mining?: boolean | null
+          cpu_throttle?: number | null
           created_at?: string
           daily_streak?: number | null
           device_id?: string | null
@@ -209,6 +243,8 @@ export type Database = {
         }
         Update: {
           balance_usd?: number | null
+          charge_only_mining?: boolean | null
+          cpu_throttle?: number | null
           created_at?: string
           daily_streak?: number | null
           device_id?: string | null
@@ -288,6 +324,68 @@ export type Database = {
           invitee_id?: string
           inviter_id?: string
           tier?: number
+        }
+        Relationships: []
+      }
+      task_completions: {
+        Row: {
+          completed_at: string | null
+          id: string
+          reward_usd: number
+          task_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          reward_usd?: number
+          task_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          reward_usd?: number
+          task_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_completions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          reward_usd: number
+          task_type: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          reward_usd?: number
+          task_type: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          reward_usd?: number
+          task_type?: string
+          title?: string
         }
         Relationships: []
       }
