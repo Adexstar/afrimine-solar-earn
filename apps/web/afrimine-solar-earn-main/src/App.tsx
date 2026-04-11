@@ -11,6 +11,8 @@ import Wallet from "./pages/Wallet";
 import Settings from "./pages/Settings";
 import Cluster from "./pages/Cluster";
 import Admin from "./pages/Admin";
+import Boost from "./pages/Boost";
+import Tasks from "./pages/Tasks";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
           <Route path="/settings" element={<Settings />} />
           <Route path="/cluster" element={<Cluster />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/boost" element={<Boost />} />
+          <Route path="/tasks" element={<Tasks />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
