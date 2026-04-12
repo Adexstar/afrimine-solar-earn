@@ -17,6 +17,7 @@ import {
   History,
   TrendingUp,
   Zap,
+  Lock,
 } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import WithdrawalHistory from "@/components/WithdrawalHistory";
@@ -136,7 +137,7 @@ const Wallet = () => {
               <WalletIcon className="w-7 h-7 text-white" />
             </div>
             <div>
-              <p className="text-white/80 text-sm mb-1">Your Balance</p>
+              <p className="text-white/80 text-sm mb-1">Withdrawable Balance</p>
               <h2 className="text-4xl font-bold text-white font-mono">${balance.toFixed(4)}</h2>
               <div className="flex items-center justify-center gap-3 text-white/60 text-xs mt-2 flex-wrap">
                 <span>≈ ₦{localValues.NGN}</span>
@@ -148,6 +149,20 @@ const Wallet = () => {
             </div>
           </div>
         </Card>
+
+        {/* Locked Bonus Info */}
+        {((profile as any)?.pending_rewards || 0) > 0 && (
+          <Card className="p-4 bg-accent/10 border-accent">
+            <div className="flex items-center gap-3">
+              <Lock className="w-5 h-5 text-accent" />
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground">Locked Bonus Rewards</p>
+                <p className="text-lg font-bold text-accent font-mono">${((profile as any)?.pending_rewards || 0).toFixed(2)}</p>
+              </div>
+              <span className="text-[10px] text-muted-foreground">Convert on Dashboard</span>
+            </div>
+          </Card>
+        )}
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 gap-3">

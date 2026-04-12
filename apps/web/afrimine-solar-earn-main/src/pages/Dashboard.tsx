@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { ReferralCard } from "@/components/ReferralCard";
 import { EarningsBreakdown } from "@/components/EarningsBreakdown";
+import { DualBalanceCard } from "@/components/DualBalanceCard";
 import { LiveEarningsCounter } from "@/components/LiveEarningsCounter";
 import { ActiveMinersWidget } from "@/components/ActiveMinersWidget";
 import { DailyStreakWidget } from "@/components/DailyStreakWidget";
@@ -198,6 +199,12 @@ const Dashboard = () => {
             )}
           </div>
         </div>
+
+        {/* Dual Balance Card */}
+        <DualBalanceCard
+          balanceUsd={profile?.balance_usd || 0}
+          pendingRewards={(profile as any)?.pending_rewards || 0}
+        />
 
         {/* Earnings Breakdown */}
         <EarningsBreakdown
