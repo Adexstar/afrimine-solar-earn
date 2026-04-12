@@ -55,9 +55,14 @@ export function useTasks() {
     if (error) throw error;
 
     // Credit pending_rewards (locked), not balance_usd
-    await supabase
+    const { data: profileData } = await (supabase as any)
       .from("profiles")
-      .update({ pending_rewards: ((await supabase.from("profiles").select("pending_rewards").eq("user_id", session.user.id).single()).data?.pending_rewards ?? 0) + rewardUsd })
+      .select("pending_rewards")
+      .eq("user_id", session.user.id)
+      .single();
+    await (supabase as any)
+      .from("profiles")
+      .update({ pending_rewards: ((profileData?.pending_rewards as number) ?? 0) + rewardUsd })
       .eq("user_id", session.user.id);
 
     await fetchData();

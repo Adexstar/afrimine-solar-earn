@@ -17,7 +17,7 @@ export function DualBalanceCard({ balanceUsd, pendingRewards, onConverted }: Dua
   const handleConvert = async () => {
     setConverting(true);
     try {
-      const { data, error } = await supabase.rpc("convert_pending_rewards", {
+      const { data, error } = await (supabase.rpc as any)("convert_pending_rewards", {
         _user_id: (await supabase.auth.getUser()).data.user?.id,
       });
       if (error) throw error;

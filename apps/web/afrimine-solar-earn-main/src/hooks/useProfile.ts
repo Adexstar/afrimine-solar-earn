@@ -37,7 +37,7 @@ export function useProfile() {
           .single();
 
         if (error) throw error;
-        setProfile(data as Profile);
+        setProfile(data as unknown as Profile);
       } catch (err: any) {
         setError(err.message);
       } finally {
