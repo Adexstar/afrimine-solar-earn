@@ -214,6 +214,7 @@ export type Database = {
           language: string | null
           last_heartbeat: string | null
           mining_active: boolean | null
+          pending_rewards: number | null
           referral_code: string
           referred_by: string | null
           total_earned_usd: number | null
@@ -233,6 +234,7 @@ export type Database = {
           language?: string | null
           last_heartbeat?: string | null
           mining_active?: boolean | null
+          pending_rewards?: number | null
           referral_code: string
           referred_by?: string | null
           total_earned_usd?: number | null
@@ -252,6 +254,7 @@ export type Database = {
           language?: string | null
           last_heartbeat?: string | null
           mining_active?: boolean | null
+          pending_rewards?: number | null
           referral_code?: string
           referred_by?: string | null
           total_earned_usd?: number | null
@@ -486,6 +489,7 @@ export type Database = {
       }
     }
     Functions: {
+      convert_pending_rewards: { Args: { _user_id: string }; Returns: number }
       generate_cluster_code: { Args: never; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
       has_role: {
