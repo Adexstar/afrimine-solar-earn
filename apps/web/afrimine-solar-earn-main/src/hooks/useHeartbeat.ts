@@ -29,8 +29,8 @@ export function useHeartbeat({ isMining, hashrate = 0, isCharging = false }: Hea
           .eq("user_id", user.id);
 
         // Upsert mining session with current stats
-        await (supabase
-          .from("mining_sessions") as any)
+        await (supabase as any)
+          .from("mining_sessions")
           .upsert({
             user_id: user.id,
             device_id: deviceId,
@@ -55,8 +55,8 @@ export function useHeartbeat({ isMining, hashrate = 0, isCharging = false }: Hea
 
         // Mark session idle
         const deviceId = getOrCreateDeviceId();
-        await (supabase
-          .from("mining_sessions") as any)
+        await (supabase as any)
+          .from("mining_sessions")
           .upsert({
             user_id: user.id,
             device_id: deviceId,
