@@ -8,6 +8,7 @@ export interface Profile {
   referral_code: string;
   referred_by: string | null;
   balance_usd: number;
+  pending_rewards: number;
   total_earned_usd: number;
   total_paid_usd: number;
   language: string;
