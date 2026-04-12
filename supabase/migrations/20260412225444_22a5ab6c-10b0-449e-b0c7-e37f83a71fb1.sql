@@ -1,0 +1,1 @@
+ALTER TABLE public.mining_sessions ADD CONSTRAINT mining_sessions_user_device_unique UNIQUE (user_id, device_id);
