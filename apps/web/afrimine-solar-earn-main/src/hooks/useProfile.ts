@@ -8,6 +8,7 @@ export interface Profile {
   referral_code: string;
   referred_by: string | null;
   balance_usd: number;
+  pending_rewards: number;
   total_earned_usd: number;
   total_paid_usd: number;
   language: string;
@@ -36,7 +37,7 @@ export function useProfile() {
           .single();
 
         if (error) throw error;
-        setProfile(data as Profile);
+        setProfile(data as unknown as Profile);
       } catch (err: any) {
         setError(err.message);
       } finally {

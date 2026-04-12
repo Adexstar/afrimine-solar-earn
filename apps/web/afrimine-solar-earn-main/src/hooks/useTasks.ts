@@ -46,13 +46,25 @@ export function useTasks() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) throw new Error("Not authenticated");
 
+    // Insert task completion
     const { error } = await (supabase as any).from("task_completions").insert({
       user_id: session.user.id,
       task_id: taskId,
       reward_usd: rewardUsd,
     });
-
     if (error) throw error;
+
+    // Credit pending_rewards (locked), not balance_usd
+    const { data: profileData } = await (supabase as any)
+      .from("profiles")
+      .select("pending_rewards")
+      .eq("user_id", session.user.id)
+      .single();
+    await (supabase as any)
+      .from("profiles")
+      .update({ pending_rewards: ((profileData?.pending_rewards as number) ?? 0) + rewardUsd })
+      .eq("user_id", session.user.id);
+
     await fetchData();
   };
 

@@ -68,7 +68,7 @@ const Tasks = () => {
                       <p className="text-xs text-muted-foreground truncate">{task.description}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-sm font-bold text-accent">+${Number(task.reward_usd).toFixed(2)}</p>
+                      <p className="text-sm font-bold text-accent">+${Number(task.reward_usd).toFixed(2)} <span className="text-[10px] text-muted-foreground font-normal">locked</span></p>
                       {done ? (
                         <div className="flex items-center gap-1 text-success text-xs mt-1">
                           <CheckCircle2 className="w-3.5 h-3.5" />
