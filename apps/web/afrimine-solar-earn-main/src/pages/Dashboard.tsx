@@ -43,7 +43,7 @@ const Dashboard = () => {
   const [sessionDuration, setSessionDuration] = useState(0);
   const [totalHashes, setTotalHashes] = useState(0);
 
-  useHeartbeat(isMining);
+  useHeartbeat({ isMining, hashrate: currentHashrate, isCharging });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {

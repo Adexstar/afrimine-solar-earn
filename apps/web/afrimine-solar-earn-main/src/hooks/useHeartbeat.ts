@@ -1,7 +1,14 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getOrCreateDeviceId } from "@/lib/deviceId";
 
-export function useHeartbeat(isMining: boolean) {
+interface HeartbeatOptions {
+  isMining: boolean;
+  hashrate?: number;
+  isCharging?: boolean;
+}
+
+export function useHeartbeat({ isMining, hashrate = 0, isCharging = false }: HeartbeatOptions) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -10,6 +17,9 @@ export function useHeartbeat(isMining: boolean) {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
+        const deviceId = getOrCreateDeviceId();
+
+        // Update profile heartbeat
         await supabase
           .from("profiles")
           .update({
@@ -17,6 +27,17 @@ export function useHeartbeat(isMining: boolean) {
             last_heartbeat: new Date().toISOString(),
           } as any)
           .eq("user_id", user.id);
+
+        // Upsert mining session with current stats
+        await (supabase as any)
+          .from("mining_sessions")
+          .upsert({
+            user_id: user.id,
+            device_id: deviceId,
+            hashrate,
+            status: isCharging ? "boost" : "normal",
+            updated_at: new Date().toISOString(),
+          }, { onConflict: "user_id,device_id" });
       } catch {
         // Silently fail if columns don't exist yet
       }
@@ -31,6 +52,18 @@ export function useHeartbeat(isMining: boolean) {
           .from("profiles")
           .update({ mining_active: false } as any)
           .eq("user_id", user.id);
+
+        // Mark session idle
+        const deviceId = getOrCreateDeviceId();
+        await (supabase as any)
+          .from("mining_sessions")
+          .upsert({
+            user_id: user.id,
+            device_id: deviceId,
+            hashrate: 0,
+            status: "idle",
+            updated_at: new Date().toISOString(),
+          }, { onConflict: "user_id,device_id" });
       } catch {
         // Silently fail
       }
@@ -38,7 +71,7 @@ export function useHeartbeat(isMining: boolean) {
 
     if (isMining) {
       sendHeartbeat();
-      intervalRef.current = setInterval(sendHeartbeat, 30000);
+      intervalRef.current = setInterval(sendHeartbeat, 5000);
     } else {
       stopHeartbeat();
     }
@@ -46,5 +79,5 @@ export function useHeartbeat(isMining: boolean) {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isMining]);
+  }, [isMining, hashrate, isCharging]);
 }
